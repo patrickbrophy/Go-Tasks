@@ -8,4 +8,16 @@ I have used channels to signal a task, or go routine to stop. Two new channels a
  - TaskIDStop
  - TaskIDStopped
 
-These channels are unique. They are then stored in an array, known as "TaskArray". I use a struct to forn this array, which consists of your Task ID and your two unique channels. 
+These channels are unique. They are then stored in an array, known as "TaskArray". I use a struct to form this array, which consists of your Task ID and your two unique channels. 
+
+To stop the task you call: 
+```go
+stop(TaskID)
+```
+
+Beneath the hood, this is:
+```go
+Find index of TaskID in TaskArray (i)
+close(taskArray[i].taskIDStop)
+<-taskArray[i].taskIDStopped
+```
