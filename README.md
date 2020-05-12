@@ -22,6 +22,7 @@ Beneath the hood, this is:
 Find index of TaskID in taskArray (i)
 close(taskArray[i].taskIDStop)
 <-taskArray[i].taskIDStopped
+Return task stopped to UI
 Remove task from taskArray
 ```
 This finds the specified task in your task array, and the related channels. It then closes the taskIDStop channel. 
@@ -35,7 +36,7 @@ defer close(taskIDStopped)
 Select {
 default:
  Do task etc
-case <-taskIDStopped:
+case <-taskIDStop:
  waitgroup.Done()
  return
  //Task exits
