@@ -10,6 +10,15 @@ I have used channels to signal a task, or go routine to stop. Two new channels a
 
 These channels are unique. They are then stored in an array, known as "taskArray". I use a struct to form this array, which consists of your Task ID and your two unique channels. 
 
+## Starting the task
+To start a task, you would create both channels and a Task ID. This item would then be appended to taskArray, and then you call your function:
+```go
+go Task(task.taskIDStop, task.taskIDStopped, &waitgroup)
+```
+Both task.taskIDStop and task.taskIDStopped are **chan struct{}**. You do not have to use struct, and can instead use **chan string** if you want. 
+
+After you have started your task, you can now stop it at any time.
+
 ## Calling the stop function
 
 To stop the task you call: 
