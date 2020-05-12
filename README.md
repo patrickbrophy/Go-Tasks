@@ -24,7 +24,10 @@ close(taskArray[i].taskIDStop)
 <-taskArray[i].taskIDStopped
 Remove task from taskArray
 ```
-This finds the specified task in your task array, and the related channels. It then closes the taskIDStop channel. To know when the channel has closed, for each operation in your function you would check using a select statement, like so:
+This finds the specified task in your task array, and the related channels. It then closes the taskIDStop channel. 
+
+## Handling the stop
+To know when the channel has closed, for each operation in your function you would check using a select statement, like so:
 ```go
 
 defer close(taskIDStopped)
