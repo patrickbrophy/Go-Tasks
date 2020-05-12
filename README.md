@@ -52,3 +52,7 @@ case <-taskIDStop:
 }
 ```
 You must defer the closing of the taskIDStopped channel. Defering the closing will allow it to close the channel when your go routine exits, therefore signaling your go routine has stopped successfully.
+
+## Use cases
+
+This is mainly built for sneaker bots that use Go for their backend, but it can be adapted for anything if required.
