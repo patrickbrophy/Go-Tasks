@@ -7,3 +7,5 @@ The issue with Go routines and their use in tasks (in sneaker bots) is stopping 
 I have used channels to signal a task, or go routine to stop. Two new channels are created when you start a task:
  - TaskIDStop
  - TaskIDStopped
+
+These channels are unique. They are then stored in an array, known as "TaskArray". I use a struct to forn this array, which consists of your Task ID and your two unique channels. 
