@@ -15,9 +15,9 @@ To start a task, you would create both channels and a Task ID. This item would t
 ```go
 go Task(task.taskIDStop, task.taskIDStopped, &waitgroup)
 ```
-Both task.taskIDStop and task.taskIDStopped are **chan struct{}**. You do not have to use struct, and can instead use **chan string** if you want. 
-
 After you have started your task, you can now stop it at any time.
+
+Note task.taskIDStop and task.taskIDStopped are **chan struct{}**.
 
 ## Calling the stop function
 
@@ -29,8 +29,8 @@ stop(TaskID)
 Beneath the hood, this is:
 ```go
 Find index of TaskID in taskArray (i)
-close(taskArray[i].taskIDStop)
-<-taskArray[i].taskIDStopped
+Close the taskIDStop channel (i)
+Wait for the taskIDStopped channel (i) to close upon the go routine exit
 Return task stopped to UI
 Remove task from taskArray
 ```
@@ -44,11 +44,12 @@ defer close(taskIDStopped)
 
 Select {
 default:
- Do task etc
+ // ATC, Submit checkout etc
 case <-taskIDStop:
  waitgroup.Done()
  return
  //Task exits
+ //Closes taskIDStopped upon exit
 }
 ```
 You must defer the closing of the taskIDStopped channel. Defering the closing will allow it to close the channel when your go routine exits, therefore signaling your go routine has stopped successfully.
