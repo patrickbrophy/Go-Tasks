@@ -14,7 +14,7 @@ type taskControlStore struct {
 }
 
 //Array for tasks
-var taskArray []taskControlStore
+var taskMap = make(map[int]taskControlStore)
 
 //Example
 func Task(taskIDStop chan struct{}, taskIDStopped chan struct{}, waitgroup *sync.WaitGroup) {
@@ -58,33 +58,21 @@ func Task(taskIDStop chan struct{}, taskIDStopped chan struct{}, waitgroup *sync
 func StopTask(taskID int) {
 
 	//Find task ID -> channels
-	index, taskIDFound := FindInTaskArray(taskArray, taskID)
-	if !taskIDFound {
+	if val, ok := taskMap[taskID]; !ok {
 		fmt.Println("Task does not exist.")
-	} else if taskIDFound {
+	} else if ok {
 		//Close the stop channel which stops the task
-		close(taskArray[index].taskIDStop)
+		close(val.taskIDStop)
 
 		//Wait for the stopped channel, which confirms it has closed
-		<-taskArray[index].taskIDStopped
+		<-val.taskIDStopped
 		fmt.Println("Task stopped")
 		//Remove from task array
-		taskArray = append(taskArray[:index], taskArray[index+1:]...)
+		delete(taskMap, taskID)
 	}
-}
-
-//Find index of task ID for later use
-func FindInTaskArray(slice []taskControlStore, val int) (int, bool) {
-	for i, item := range slice {
-		if item.taskID == val {
-			return i, true
-		}
-	}
-	return -1, false
 }
 
 func main() {
-
 	var waitgroup sync.WaitGroup
 
 	//Create channels for control
@@ -98,14 +86,14 @@ func main() {
 		taskIDStopped: newTaskIDStopped}
 
 	//Add to array
-	taskArray = append(taskArray, task)
+	taskMap[task.taskID] = task
 
 	//Create a go routine for task
 	waitgroup.Add(1)
 	go Task(task.taskIDStop, task.taskIDStopped, &waitgroup)
 
 	//Wait and then stop task
-	time.Sleep(1200 * time.Millisecond)
+	time.Sleep(3000 * time.Millisecond)
 	StopTask(task.taskID)
 
 	waitgroup.Wait()
