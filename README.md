@@ -28,13 +28,13 @@ stop(TaskID)
 
 Beneath the hood, this is:
 ```go
-Find index of TaskID in taskArray (i)
+Find task by taskID in taskMap 
 Close the taskIDStop channel (i)
 Wait for the taskIDStopped channel (i) to close upon the go routine exit
 Return task stopped to UI
-Remove task from taskArray
+Remove task from taskMap
 ```
-This finds the specified task in your task array, and the related channels. It then closes the taskIDStop channel. 
+This finds the specified task in your task map, and the related channels. It then closes the taskIDStop channel. 
 
 ## Handling the stop
 To know when the channel has closed, for each operation in your function you would check using a select statement, like so:
